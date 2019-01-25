@@ -1,6 +1,5 @@
 <?php
-  define('SERVER', 'localhost');
-  define('USER', 'root');
-  define('Password', 'm2licee');
-  define('DB', 'camagru_db');
+  $servername   = 'localhost';
+  $username = 'root';
+  $password = 'm2licee';
 ?>
