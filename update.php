@@ -31,20 +31,15 @@
 <?php
 
 function update($params) {
-    echo "<script> console.log('1')</script>";
     $db = new Database();
-    echo "<script> console.log('6')</script>";
     $query = 'UPDATE users SET `password`=? WHERE token=?';
-    echo "<script> console.log('2')</script>";
     $db->updateRow($query, $params);
-    echo "<script> console.log('5')</script>";
 }
 
-if (isset($_POST['submit']))
+if (isset($_POST['reset_password']))
 {
     if($_POST['password'] != $_POST['repeat_password'])
     {
-        echo "<script> console.log('3')</script>";
         echo 'Passwords do not match.';
         die();
     } 
@@ -52,9 +47,8 @@ if (isset($_POST['submit']))
     {
         $password = trim($_POST['password']);
         $params = [password_hash($password, PASSWORD_DEFAULT), $_POST['token']];
-        echo "<script> console.log('4')</script>";
         update($params);
-        header('location: ./join.php');
+        header('location: ../join.php');
     }
 }
 
@@ -65,7 +59,7 @@ echo '<!DOCTYPE html>
     <title>Password Update</title>
 </head>
 <body>
-    <form action="./update.php" method="post">
+    <form action="includes/update.inc.php" method="post">
     <input type="text" placeholder="email" name="email" value="'.$_GET['email'].'"><br>
     <input type="text" value="'.$_GET['token'].'"><br>
     <input type="text" placeholder="Type new password" name="password"><br>

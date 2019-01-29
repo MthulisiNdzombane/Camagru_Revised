@@ -43,25 +43,27 @@ try {
             $message = '<label>All fields are required</label>';
         } 
         else {
-            $db = new Database();
-            $username = trim($_POST["username"]);
-            $password = trim($_POST["password"]);
-            $params = [$username];
-            $query = "SELECT `password` FROM users WHERE username=?";
-            $hash_password = $db->getRow($query, $params);
+        $db = new Database();
+        $username = trim($_POST["username"]);
+        $password = trim($_POST["password"]);
+        $params = [$username];
+        $query = "SELECT `password` FROM users WHERE username=?";
+        $hash_password = $db->getRow($query, $params);
 
-                if (password_verify($password, $hash_password['password'])) {
+            if (password_verify($password, $hash_password['password'])) {
                     $_SESSION["Username"] = trim($_POST["username"]);
                     header ('location: ../gallery.php');
-                } 
-                else {
+            } 
+            else {
                     echo $message = '<label>Login failed!</label>';
-                }
-            
-            }  if(isset($_POST["reset"])) {
-                    header('refresh: 0.2; URL=../recovery.php');
             }
-        }
+            
+        }  
+    }
+        if(isset($_POST["reset_password"])) {
+            header('refresh: 0.2; URL= update.php');
+    }
     } catch(PDOException $e){
         die($e->getMessage());
+        
 }

@@ -19,7 +19,7 @@
   try {
     $conn = new PDO("mysql:host=$servername", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $sql = "CREATE TABLE $DB_NAME .`users` (
+    $sql = "CREATE TABLE IF NOT EXISTS $DB_NAME .`users` (
       `id_user` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
       `username` varchar(20) NOT NULL,
       `email` varchar(255) NOT NULL,
@@ -38,7 +38,7 @@
   try {
     $conn = new PDO("mysql:host=$servername", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $sql = "CREATE TABLE $DB_NAME .`images` (
+    $sql = "CREATE TABLE IF NOT EXISTS $DB_NAME .`images` (
       `img_id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
       `img_path` varchar(255) NOT NULL,
       `date_uploaded` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -55,7 +55,7 @@
   try {
     $conn = new PDO("mysql:host=$servername", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $sql = "CREATE TABLE `camagru_db`.`comments` ( 
+    $sql = "CREATE TABLE IF NOT EXISTS `camagru_db`.`comments` ( 
       `id_user` INT(25) NOT NULL AUTO_INCREMENT , 
       `post` VARCHAR(255) NOT NULL , 
       `date_posted` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , 
@@ -69,10 +69,21 @@
     echo 'Failed to create table:'. $e->getMessage();
   }
 
-  // //likes table
-  // try {
-    
-  // } catch (PDOEXcepetion $e) {
-  //   echo 'Failed to create table:'. $e->getMessage();
-  // }
+  //likes table
+  try {
+    $conn = new PDO("mysql:host=$servername", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $sql = "CREATE TABLE IF NOT EXISTS $DB_NAME . `likes` (
+      `id_user` int(11) NOT NULL AUTO_INCREMENT,
+      `img_id` INT(25) NOT NULL,
+      FOREIGN KEY (img_id) REFERENCES images(img_id),
+      `liked_on` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (id_user) REFERENCES users(id_user), 
+      PRIMARY KEY (`id_user`))ENGINE=InnoDB DEFAULT CHARSET=utf8";
+      $conn->exec($sql);
+      echo "Likes-table successfully created<br>";
+
+  } catch (PDOEXcepetion $e) {
+    echo 'Failed to create table:'. $e->getMessage();
+  }
 ?>
