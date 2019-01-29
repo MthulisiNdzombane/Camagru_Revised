@@ -16,7 +16,7 @@ function verify($email) {
     Thanks for signing up!
 
     Please click this link to activate your account:
-    http://localhost:8080/splash/verify.php?email='.$email.'&token='.$token.'
+    http://localhost:8080/Camagru_Revised/verify.php?email='.$email.'&token='.$token.'
     ';
 
     $headers = 'From: no-reply@camagru.com' . "\r\n"; // Set from headers
