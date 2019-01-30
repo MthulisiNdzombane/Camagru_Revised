@@ -36,7 +36,7 @@ function update($params) {
     $db->updateRow($query, $params);
 }
 
-if (isset($_POST['reset_password']))
+if (isset($_POST['submit']))
 {
     if($_POST['password'] != $_POST['repeat_password'])
     {
