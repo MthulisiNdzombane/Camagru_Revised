@@ -16,7 +16,7 @@ function recovery($email) {
     Please use the forwarded link to recover your password... 
 
     Please click this link to recover your account password:
-    http://127.0.0.1:8080/splash/update.php?email='.$email.'&token='.$new_token.'
+    http://localhost:8080/update.php?email='.$email.'&token='.$new_token.'
     ';
 
     $headers = 'From: no-reply@camagru.com' . "\r\n"; // Set from headers

@@ -13,8 +13,10 @@ try {
         //Error handling [empty fields]
         if(empty($_POST["username"]) || empty($_POST["email"]) || empty($_POST["pwd"]) || empty($_POST["pwd-repeat"])) {
             header('refresh: 0.3; URL=../join.php');
-        
-        } else if($_POST['pwd'] == $_POST['pwd-repeat']) {
+        } else if (!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) {
+            echo("$email is not a valid email address");
+
+          } else if($_POST['pwd'] == $_POST['pwd-repeat']) {
             $username   = trim($_POST["username"]);
             $email      = trim($_POST["email"]);
             // $password   = trim($_POST["pwd"]);
@@ -30,7 +32,7 @@ try {
             verify($email);
 
             $message = '<label>Please sign in!</label>';
-            header('refresh: 0.2; URL=../join.php');
+            header('refresh: 0.7; URL=../join.php');
             
         } else {
             echo $message = '<label>Password do not match!</label>';
@@ -40,7 +42,8 @@ try {
     //User login.
     if(isset($_POST["login-submit"])) {
         if(empty($_POST["username"]) || empty($_POST["password"])) {
-            $message = '<label>All fields are required</label>';
+            echo $message = '<label>All fields are required</label>';
+            header('refresh: 0.7; URL=../join.php');
         } 
         else {
         $db = new Database();
@@ -61,7 +64,7 @@ try {
         }  
     }
         if(isset($_POST["reset_password"])) {
-            header('refresh: 0.2; URL= update.php');
+            header('refresh: 0.2; URL=update.php');
     }
     } catch(PDOException $e){
         die($e->getMessage());

@@ -22,9 +22,9 @@ session_start();
             <div class="index_form">
                 <form class="leftc" action="includes/join.inc.php" method="POST">
                     <input type="text" name="username" placeholder="username"><br>
-                    <input type="text" name="email" placeholder="E-mail"><br>
-                    <input type="password" name="pwd" placeholder="Password"><br>
-                    <input type="password" name="pwd-repeat" placeholder="Confirm password"><br>
+                    <input type="email" name="email" placeholder="E-mail" ><br>
+                    <input type="password" name="pwd" placeholder="Password" minlength="8" maxlength="12" pattern="[A-Za-z]{.}" title="Password should be min 6 & max 12" required><br>
+                    <input type="password" name="pwd-repeat" placeholder="Confirm password" minlength="8" maxlength="12" pattern="[A-Za-z]{.}" title="Password should be min 6 & max 12" required><br>
                     <button class="form_btn" type="submit" name="signup">Register</button>
                 </form>
             </div>
@@ -37,6 +37,7 @@ session_start();
                     <input type="password" name="password" placeholder="password"><br>
                     <div>
                         <button id="login-submit" class="form_btn" type="submit" name="login-submit" value="Login">Login</button>
+                        <button id="reset_password" class="form_btn" type="submit" name="reset_password" value="Reset">Reset</button>
                     </div>
                 </form>
             </div>
@@ -44,6 +45,5 @@ session_start();
     </div>
 </div>
     <script src="js/main.js"></script>
-    <!-- <script src="js/modal.js"></script> -->
 </body>
 </html>

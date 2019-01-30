@@ -16,13 +16,13 @@ function verify($email) {
     Thanks for signing up!
 
     Please click this link to activate your account:
-    http://localhost:8080/splash/verify.php?email='.$email.'&token='.$token.'
+    http://localhost:8080/verify.php?email='.$email.'&token='.$token.'
     ';
 
     $headers = 'From: no-reply@camagru.com' . "\r\n"; // Set from headers
     mail($to, $subject, $message, $headers); // Send our email
 
-    echo "<script> console.log('Email sent')</script>";
+    echo $message = '<label>Email Verification Sent!!</label>';
 }
     //vfr = verify-variable
     $vfr = $_GET;
