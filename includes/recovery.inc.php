@@ -28,11 +28,11 @@ function recovery($email) {
 if(isset($_POST['submit'])) {
     if(isset($_POST['email'])) {
         recovery($_POST['email']);
-        // $db = new Database();
+        $db = new Database();
 
-        // $email = trim($_POST["email"]);
-        // $params = [$email];
-        // $query = "UPDATE users SET password=? WHERE email=?";
-        // $db->insertRow($query, $params);
+        $email = trim($_POST["email"]);
+        $params = [$email];
+        $query = "UPDATE users SET password=? WHERE email=?";
+        $db->insertRow($query, $params);
     }
 }
