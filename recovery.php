@@ -21,7 +21,6 @@ function recovery($email) {
 
     $headers = 'From: no-reply@camagru.com' . "\r\n"; // Set from headers
     mail($to, $subject, $message, $headers); // Send our email
-
     echo "<script> alert('Email sent') </script>";
 }
 
