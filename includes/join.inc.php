@@ -14,7 +14,8 @@ try {
         if(empty($_POST["username"]) || empty($_POST["email"]) || empty($_POST["pwd"]) || empty($_POST["pwd-repeat"])) {
             header('refresh: 0.3; URL=../join.php');
         } else if (!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) {
-            echo("$email is not a valid email address");
+            echo "<script> alert ('This is not a valid email address!') </script>";
+            header('refresh: 0.0; URL=../join.php');
 
           } else if($_POST['pwd'] == $_POST['pwd-repeat']) {
             $username   = trim($_POST["username"]);
@@ -31,11 +32,12 @@ try {
             //Email verification function
             verify($email);
 
-            $message = '<label>Please sign in!</label>';
-            header('refresh: 0.7; URL=../join.php');
+            echo "<script> alert ('COngratulations. You can proceed to login...') </script>";
+                    header('refresh: 0.0; URL=../join.php');
             
         } else {
-            echo $message = '<label>Password do not match!</label>';
+            echo "<script> alert ('Passwords do not match!') </script>";
+            header('refresh: 0.0; URL=../join.php');
         }
     }
 
@@ -43,7 +45,7 @@ try {
     if(isset($_POST["login-submit"])) {
         if(empty($_POST["username"]) || empty($_POST["password"])) {
             echo $message = '<label>All fields are required</label>';
-            header('refresh: 0.7; URL=../join.php');
+            header('refresh: 0.0; URL=../join.php');
         } 
         else {
         $db = new Database();
@@ -55,16 +57,19 @@ try {
 
             if (password_verify($password, $hash_password['password'])) {
                     $_SESSION["Username"] = trim($_POST["username"]);
-                    header ('location: ../gallery.php');
+                    header ('refresh: 0.0; URL=../gallery.php');
+
+                    echo "<script> alert ('loggin in...') </script>";
             } 
             else {
-                    echo $message = '<label>Login failed!</label>';
+                    echo "<script> alert ('Login Failed.') </script>";
+                    header('refresh: 0.0; URL=../join.php');
             }
-            
         }  
     }
         if(isset($_POST["reset_password"])) {
-            header('refresh: 0.2; URL=update.php');
+            header('refresh: 0.0; URL=./../recovery.php');
+            echo "<script> alert ('Please provide your email address...') </script>";
     }
     } catch(PDOException $e){
         die($e->getMessage());

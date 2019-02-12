@@ -1,7 +1,11 @@
 <?php
-
 include_once 'classes/Database.php';
 // // include 'includes/join.inc.php';
+// echo"GET= ";print_r($_GET);
+// echo"SESSION= ";print_r($_SESSION);
+// echo"POST= ";print_r($_POST);
+
+
 
 function verify($email) {
     $db = new Database();
@@ -24,22 +28,19 @@ function verify($email) {
 
     echo $message = '<label>Email Verification Sent!!</label>';
 }
-    //vfr = verify-variable
-    $vfr = $_GET;
+    $vfr = $_GET['token'];
 
-if (isset($vfr['token'])){
+if (isset($vfr)){
     $db = new Database();
     
     $email = $_GET['email'];
-    
-    $query = "SELECT `token` FROM `users` WHERE `email` = ?";
+    $query = "SELECT `token` FROM `users` WHERE `email` = '$email'";
     $params = [$email];
     $db_token = $db->getRow($query, $params);
     
-    if ($db_token['token'] == $vfr['token']){
-
-        $verified = 1;
-        $query = "UPDATE users SET verified= ? WHERE email=?";
+    if (isset($vfr)){
+        $email = $_GET['email'];
+        $query = "UPDATE users SET verified= 1 WHERE email='$email'";
         $params = [$verified, $vfr['email']];
         $db->updateRow($query, $params);
         header('location: join.php');

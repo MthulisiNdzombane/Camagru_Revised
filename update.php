@@ -1,54 +1,30 @@
-<?php 
-// require_once './classes/Database.php';
-// session_start(); 
-// echo "<script> console.log('Email sent1')</script>";
-// $details = $_GET;
-
-// function token_verify($details) {
-//     echo "<script> console.log('Email sent3')</script>";
-//     $db = new Database();
-//     $query = "SELECT `token` FROM users WHERE email=?";
-//     $params = [$details['token'], $details['email']];
-//     // print_r($params);
-//     echo "<script> console.log('Email sent4')</script>";
-//     $result = $db->getRow($query, $params);
-//     if(1) {
-//         echo "<script> console.log('Email sent5')</script>";
-//        header('location: update.php');
-//     }
-//     else
-//     {
-//         echo "<script> console.log('Email sent4')</script>";
-//         echo "Invalid Token!, Please request a new one.";
-//         header('refresh: 3.0; URL=./recovery.php');
-//     }
-// }
-// echo "<script> console.log('Email sent2')</script>";
-//     token_verify($details);
-?>
-
-
 <?php
 
-function update($params) {
+include './config/config.php';
+require_once './classes/Database.php';
+
+function update($password, $email) {
     $db = new Database();
-    $query = 'UPDATE users SET `password`=? WHERE token=?';
-    $db->updateRow($query, $params);
+    $params = [$password, $email];
+    $query = "UPDATE users SET password=? WHERE email=?";
+    if ($db->insertRow($query, $params)){
+        return TRUE;
+    }
+    return FALSE;
 }
 
-if (isset($_POST['submit']))
+if (isset($_POST))
 {
-    if($_POST['password'] != $_POST['repeat_password'])
-    {
-        echo 'Passwords do not match.';
-        die();
-    } 
-    else if($_POST['password'] == $_POST['repeat_password']) 
-    {
+    if($_POST['password'] != $_POST['repeat_password']){
+        header('refresh: 0.0; URL=update.php');
+        echo "<script> alert('Passwords do not match...') </script>";
+    }
+    if($_POST['password'] == $_POST['repeat_password']) {
         $password = trim($_POST['password']);
-        $params = [password_hash($password, PASSWORD_DEFAULT), $_POST['token']];
-        update($params);
-        header('location: ../join.php');
+
+        if (update(password_hash($password, PASSWORD_DEFAULT), $_POST['email']) == TRUE){
+            header('location: join.php');
+        }
     }
 }
 
@@ -59,9 +35,8 @@ echo '<!DOCTYPE html>
     <title>Password Update</title>
 </head>
 <body>
-    <form action="includes/update.inc.php" method="post">
+    <form action="" method="POST">
     <input type="text" placeholder="email" name="email" value="'.$_GET['email'].'"><br>
-    <input type="text" value="'.$_GET['token'].'"><br>
     <input type="text" placeholder="Type new password" name="password"><br>
     <input type="text" placeholder="Confirm new password" name="repeat_password"><br>
     <input type="submit" name="submit">
