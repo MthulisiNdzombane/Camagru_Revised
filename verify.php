@@ -1,11 +1,5 @@
 <?php
 include_once 'classes/Database.php';
-// // include 'includes/join.inc.php';
-// echo"GET= ";print_r($_GET);
-// echo"SESSION= ";print_r($_SESSION);
-// echo"POST= ";print_r($_POST);
-
-
 
 function verify($email) {
     $db = new Database();
