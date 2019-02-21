@@ -1,5 +1,5 @@
 <?php
-
+ini_set('display_errors', 1);
 session_start();
 include 'classes/Database.php';
 
@@ -28,7 +28,6 @@ if(isset($_POST['submit'])) {
     if(isset($_POST['email'])) {
         recovery($_POST['email']);
         $db = new Database();
-
         $email = trim($_POST['email']);
         $params = [$email];
         $query = "UPDATE users SET password=? WHERE email=?";
@@ -41,7 +40,7 @@ if(isset($_POST['submit'])) {
 <!DOCTYPE HTML>
 <html>  
 <body>
-    <form action="" method="post">
+    <form action="" method="POST">
         <input type="text" name="email" placeholder="Email required"><br>
         <input type="submit" name="submit">
     </form>

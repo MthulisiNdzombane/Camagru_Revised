@@ -1,120 +1,108 @@
-<?php
-session_start();
-?>
+<?php 
+    ini_set('display_errors', 1);
+    include_once './config/database.php';
+    session_start();
 
+    echo '<h3>Hello '.$_SESSION["username"].'</h3>';
+    if(empty($_SESSION['username'])) {
+        echo "<script> alert ('You need to be signed in to view this page!') </script>";
+        header('location: join.php');
+    }
+    function getLikes($conn, $img_id) {
+        $test = array();
+        $preview = $conn->prepare("SELECT * FROM images ORDER BY `img_id` DESC");
+        $preview->bindParam(':img_id', $img_id);
+        $preview->setFetchMode(PDO::FETCH_ASSOC);
+        $preview->execute();
+        return $preview->fetchAll();
+    }
+    function getComments($conn, $img_id)
+    {
+        $comments = $conn->prepare("SELECT * FROM `comments` WHERE img_id=:img_id");
+        $comments->bindParam(':img_id', $img_id);
+        $comments->setFetchMode(PDO::FETCH_ASSOC);
+        $comments->execute();
+        return $comments->fetchAll();
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" type="text/css" href="css/gallery.css">
-    <link rel="stylesheet" type="text/css" href="css/lightbox.min.css">
-    <link rel="stylesheet" type="text/css" href="css/camera.css">
-    <script src="js/lightbox-plus-jquery.min.js"></script>
-    <script src="js/camera.js"></script>
-    <title>Camagru</title>
-
-    <style>
-
-    
-    .nested{
-        display: grid;
-        /* grid-column-gap:1,5em; */
-        /* grid-auto-rows:minmax(50px, auto); */
-        /* grid-template-columns: repeat(3, 1fr); */
-        grid-template-columns: repeat(2, 2fr);
-    }
-
-    .grid-wrapper{
-        display: grid;
-        /* grid-column-gap: 1.5em;
-        /* grid-auto-rows:minmax(400px, auto); */
-        grid-template-columns: repeat(3, 1fr);
-        /* align-self: center */
-        /* grid-column:1/1; */
-        /* grid-row:1/1; */
-
-    }
-
-    .grid-wrapper > div {
-        background: #eee;
-        padding: 1em;
-    }
-
-    .grid-wrapper >div:nth-child(odd){
-        background:#ddd;
-    }
-
-    .grid-camera {
-        display: grid;
-        /* justify-items: stretch; */
-    }
-
-    .grid-camera > div {
-        background: #fff;
-        /* padding: 1em; */
-    }
-
-    .btn {
-    border-radius: 9px;
-    font-family: 'Oswald', sans-serif;
-    color: silver;
-    font-size: 15%;
-    padding: 1px 2px;
-    border: solid silver 3px;
-    text-transform: uppercase;
-    text-decoration: none;
-    }
-
-    .btn:hover {
-        color: goldenrod;
-        border: solid goldenrod 3px;
-    }
-    </style>
+    <link rel="stylesheet" href="css/gallery.css">
+    <title>Document</title>
 </head>
 <body>
-    <div><a class="form_btn" href="index.php">back</a></div> <br />
-    <div><a class="form_btn" href="logout.php" action="logout.php">Logout</a></div>
-        <div class="grid-wrapper">
-            <div class="gallery">
-                <div class="nested">
-                    <div><a href="images/environment-flowers-friends-543216.jpg" data-lightbox="mygallery" data-title="photography made fun"><img src="images/pexels-photo-543216.jpeg"></a></div>
-                    <div><a href="images/environment-flowers-friends-543216.jpg" data-lightbox="mygallery" data-title="photography made fun"><img src="images/pexels-photo-543216.jpeg"></a></div>
-                    <div><a href="images/backlit-bright-dawn-697243.jpg" data-lightbox="mygallery" data-title="photography made fun"><img src="images/pexels-photo-697243.jpeg"></a></div>
-                    <div><a href="images/candle-creepy-dark-236277.jpg" data-lightbox="mygallery" data-title="photography made fun"><img src="images/pexels-photo-236277.jpeg"></a></div>
-                    <div><a href="images/close-up-creepy-dark-619418.jpg" data-lightbox="mygallery" data-title="photography made fun"><img src="images/pexels-photo-619418.jpeg"></a></div>
-                    <div><a href="images/environment-flowers-friends-543216.jpg" data-lightbox="mygallery" data-title="photography made fun"><img src="images/pexels-photo-543216.jpeg"></a></div>
-                    <div><a href="images/environment-flowers-friends-543216.jpg" data-lightbox="mygallery" data-title="photography made fun"><img src="images/pexels-photo-543216.jpeg"></a></div>
-                    <div><a href="images/backlit-bright-dawn-697243.jpg" data-lightbox="mygallery" data-title="photography made fun"><img src="images/pexels-photo-697243.jpeg"></a></div>
-                    <div><a href="images/candle-creepy-dark-236277.jpg" data-lightbox="mygallery" data-title="photography made fun"><img src="images/pexels-photo-236277.jpeg"></a></div>
-                    <div><a href="images/close-up-creepy-dark-619418.jpg" data-lightbox="mygallery" data-title="photography made fun"><img src="images/pexels-photo-619418.jpeg"></a></div>
-                </div>
-            </div>
-
-            <div class="grid-camera">Camera
-                <video id="video" width="640" height="480" autoplay></video>
-                <button class="btn" id="snap">snap_</button>
-                <canvas id="canvas" width="640" height="480"></canvas>
-            </div>
-
-            <div class="grid-wrapper">Filters
-                <div class="gallery"> 
-                    <div class="nested">
-                        <div><a href="png/Faceless.png" data-lightbox="mygallery" data-title="Valamo"><img src="png/Faceless.png"></a></div>
-                        <div><a href="png/Faceoff.png" data-lightbox="mygallery" data-title="Faceoff"><img src="png/Faceoff.png"></a></div>
-                        <div><a href="png/catears.png" data-lightbox="mygallery" data-title="Smexy"><img src="png/catears.png"></a></div>
-                        <div><a href="png/Ninja.png" data-lightbox="mygallery" data-title="Spy"><img src="png/Ninja.png"></a></div>
-                        <div><a href="png/dab.png" data-lightbox="mygallery" data-title="Spy"><img src="png/dab.png"></a></div>
-                        <div><a href="png/focku.png" data-lightbox="mygallery" data-title="Spy"><img src="png/focku.png"></a></div>
-                        <div><a href="png/kodak.png" data-lightbox="mygallery" data-title="Spy"><img src="png/kodak.png"></a></div>
-                        <div><a href="png/savage.png" data-lightbox="mygallery" data-title="Spy"><img src="png/savage.png"></a></div>
-                        <div><a href="png/tears.png" data-lightbox="mygallery" data-title="Spy"><img src="png/tears.png"></a></div>
-                        <div><a href="png/dtf.png" data-lightbox="mygallery" data-title="Spy"><img src="png/dtf.png"></a></div>                      
-                    </div>
-                </div>
+    <ul>
+        <?php if(!isset($_SESSION['username'])): ?>
+            <li><a href="index.php">Home</a></li>
+            <li><a href="camera.php">Camera</a></li>
+            <li><a href="gallery.php">Gallery</a></li>
+            <li><a href="user.php">Profile</a></li>
+            <li><a href="join.php">Log in</a></li> 
+        <?php else: ?>  
+            <li><a href="index.php">Home</a></li>
+            <li><a href="camera.php">Camera</a></li>
+            <li><a href="gallery.php">Gallery</a></li>
+            <li><a href="user.php">Profile</a></li>
+            <li><a href="logout.php">Logout</a></li> 
+        <?php endif ?>
+    </ul>
+    <?php
+    $img_id = $_SESSION['username']; 
+    foreach(getLikes($conn, $img_id) as $picture): ?>
+        <div class="picture">
+            <img src="<?= $picture["photo"] ?>" alt="">
+            <form action="" method="POST">
+                <button type="submit" name="btnLike">Like</button>
+                <input type="hidden" name="img_id" value="<?= $picture["img_id"]; ?>">
+            </form>
+            <br>
+            <form action="" method="POST">
+                <textarea name="textarea" id="textarea" cols="30" rows="10" placeholder="Post a comment"></textarea>
+                <button type="submit" name="btnComment">Send</button>
+                <input type="hidden" name="img_id" value="<?= $picture["img_id"]; ?>">
+            </form>
+            <div class="comments">
+                <?php foreach(getComments($conn, $picture["img_id"]) as $comment): ?>
+                    <p class="comment"><?= $comment["post"]; ?></p>
+                <?php endforeach; ?>
             </div>
         </div>
-    </div>
+    <?php endforeach; ?>
+    <?php 
+        if(isset($_POST['btnComment'])) {
+
+            $username = $_SESSION["username"];
+            $conn = new PDO("mysql:host=localhost;dbname=camagru_db","root","m2licee");
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $select = $conn->prepare("SELECT * FROM users WHERE username='$username'");
+            $select->setFetchMode(PDO::FETCH_ASSOC);
+            $select->execute();
+            $data = $select->fetch();
+            $_SESSION['id_user'] = $data['id_user'];
+            $id_user = $_SESSION['id_user'];
+
+            $stmt = $conn->prepare("INSERT INTO `comments`(`username`, `img_id`, `post`) VALUES (:username,:img_id,:post)");
+            $stmt->bindParam(':username', $username);
+            $stmt->bindParam(':img_id', $_POST["img_id"]);
+            $stmt->bindParam(':post', $post);
+            $username = $_SESSION["username"];
+            $img_id = $id_user;
+            $post = trim($_POST['textarea']);
+            $stmt->execute();
+            echo '<meta http-equiv="refresh" content="0.01;gallery.php"/>';
+            echo "<script> alert ('Comment Posted!') </script>";
+        }
+        if(isset($_POST['btnLike'])) {
+            $img_id = $_POST['img_id'];
+            $like = $conn->prepare("UPDATE `images` SET `likes`=likes+1 WHERE `img_id`=$img_id");
+            $like->execute();
+            echo '<meta http-equiv="refresh" content="0.01;gallery.php"/>';
+            echo "<script> alert ('Liked!') </script>";
+        } 
+    ?>
 </body>
 </html>

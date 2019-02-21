@@ -1,4 +1,5 @@
 <?php
+// ini_set('display_errors', 1);
 include_once 'classes/Database.php';
 
 function verify($email) {
@@ -37,7 +38,7 @@ if (isset($vfr)){
         $query = "UPDATE users SET verified= 1 WHERE email='$email'";
         $params = [$verified, $vfr['email']];
         $db->updateRow($query, $params);
-        header('location: join.php');
+        echo '<meta http-equiv="refresh" content="0;join.php"/>';
     }
 }
 

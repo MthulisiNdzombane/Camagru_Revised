@@ -1,6 +1,6 @@
 #!/usr/bin/php
 <?php
-  include 'config.php';
+  include 'database.php';
 
   $DB_NAME = "camagru_db";
   
@@ -40,10 +40,12 @@
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $sql = "CREATE TABLE IF NOT EXISTS $DB_NAME .`images` (
       `img_id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-      `img_path` varchar(255) NOT NULL,
+      `username` varchar(255) NOT NULL,
       `date_uploaded` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      `user_id` int(11) NOT NULL,
-      FOREIGN KEY (user_id) REFERENCES users(id_user)
+      `id_user` int(11) NOT NULL,
+      `photo` LONGTEXT NOT NULL,
+      `title` VARCHAR(255) NOT NULL,
+      `likes` INT(11) DEFAULT NULL
     )ENGINE=InnoDB DEFAULT CHARSET=utf8";
     $conn->exec($sql);
     echo "Images-table successfully spawned<br>";
@@ -55,35 +57,16 @@
   try {
     $conn = new PDO("mysql:host=$servername", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $sql = "CREATE TABLE IF NOT EXISTS `camagru_db`.`comments` ( 
-      `id_user` INT(25) NOT NULL AUTO_INCREMENT , 
-      `post` VARCHAR(255) NOT NULL , 
-      `date_posted` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , 
-      `img_id` INT(25) NOT NULL ,
-      FOREIGN KEY (id_user) REFERENCES users(id_user),
-      FOREIGN KEY (img_id) REFERENCES images(img_id) , 
-    PRIMARY KEY (`id_user`)) ENGINE = InnoDB;";
+    $sql = "CREATE TABLE IF NOT EXISTS $DB_NAME .`comments` ( 
+      `comment_id` INT PRIMARY KEY AUTO_INCREMENT, 
+      `username` VARCHAR(255) NOT NULL, 
+      `img_id` INT(11) DEFAULT NULL,
+      `post` LONGTEXT NOT NULL )";
     $conn->exec($sql);
     echo "Comments-table successfully created<br>";
   } catch (PDOEXcepetion $e) {
     echo 'Failed to create table:'. $e->getMessage();
   }
-
-  //likes table
-  try {
-    $conn = new PDO("mysql:host=$servername", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $sql = "CREATE TABLE IF NOT EXISTS $DB_NAME . `likes` (
-      `id_user` int(11) NOT NULL AUTO_INCREMENT,
-      `img_id` INT(25) NOT NULL,
-      FOREIGN KEY (img_id) REFERENCES images(img_id),
-      `liked_on` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (id_user) REFERENCES users(id_user), 
-      PRIMARY KEY (`id_user`))ENGINE=InnoDB DEFAULT CHARSET=utf8";
-      $conn->exec($sql);
-      echo "Likes-table successfully created<br>";
-
-  } catch (PDOEXcepetion $e) {
-    echo 'Failed to create table:'. $e->getMessage();
-  }
+  echo "<script> alert ('Database & Tables created successfully!') </script>";
+  echo '<meta http-equiv="refresh" content="0.01;../index.php"/>';
 ?>

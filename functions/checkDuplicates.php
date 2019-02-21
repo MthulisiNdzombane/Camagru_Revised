@@ -10,8 +10,7 @@ function checkDuplicates($username, $email) {
     $params = [$username];
 
     if(($db->getRows($query, $params))) {
-        echo "<script> alert ('Username already exists!') </script>";
-            header('refresh: 0.0; URL=../join.php');
+        echo "<script> alert ('Username already taken!') </script>";
         die();
     }
 
@@ -19,8 +18,7 @@ function checkDuplicates($username, $email) {
     $params = [$email];
 
     if(($db->getRows($query, $params))) {
-        echo "<script> alert ('Email already taken...!') </script>";
-            header('refresh: 0.0; URL=../join.php');
-        die();
+        echo "<script> alert ('Email already taken!') </script>";
+            die();
     }
 }

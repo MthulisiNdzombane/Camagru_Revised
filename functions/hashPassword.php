@@ -7,9 +7,3 @@ function hashPassword($password, $action) {
     elseif ($action == 2)
         return password_verify($password[0], $password[1]);
 }
-
-// hashing
-    // hashPassword([$password], 1);
-
-// verify
-    // hashPassword([$passwordFromUser, $passwordFromDatabase], 2);

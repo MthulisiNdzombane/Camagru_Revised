@@ -1,4 +1,5 @@
 <?php
+ini_set('display_errors', 1);
 session_start();
 ?>
 
@@ -10,11 +11,11 @@ session_start();
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="css/style.css">
     <title>Welcome</title>
+
 </head>
 <body>
     <br />
-    
-    <a class="form_btn" href="gallery.php">Guest Login</a><br>
+    <a class="form_btn" href="gallery.php">Galleria</a>
     <a class="form_btn" href="index.php">back</a>
     <div class="container">
         <div class="split left">

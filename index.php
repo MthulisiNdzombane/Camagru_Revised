@@ -1,4 +1,5 @@
 <?php
+ini_set('display_errors', 1);
 session_start();
 ?>
 
@@ -17,7 +18,6 @@ session_start();
             <div class="content">
                 <h1>Selfies made fun...</h1>
                 <a class="btn" href="join.php">shoot_</a>
-                <a class="btn" href="gallery.php">Guest Login</a>
             </div>
         </div>
     </section>
