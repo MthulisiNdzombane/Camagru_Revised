@@ -3,10 +3,11 @@
     include_once './config/database.php';
     session_start();
 
+    if(isset($_SESSION['username'])) {
     echo '<h3>Hello '.$_SESSION["username"].'</h3>';
-    if(empty($_SESSION['username'])) {
-        echo "<script> alert ('You need to be signed in to view this page!') </script>";
-        header('location: join.php');
+    } else {
+    echo '<h3>please log in to access all my fuckin features</h3>';
+
     }
     function getLikes($conn, $img_id) {
         $test = array();
@@ -74,35 +75,38 @@
     <?php endforeach; ?>
     <?php 
         if(isset($_POST['btnComment'])) {
+            if(isset($_SESSION["username"])){
+                $conn = new PDO("mysql:host=localhost;dbname=camagru_db","root","m2licee");
+                $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $select = $conn->prepare("SELECT * FROM users WHERE username='$username'");
+                $select->setFetchMode(PDO::FETCH_ASSOC);
+                $select->execute();
+                $data = $select->fetch();
+                $_SESSION['id_user'] = $data['id_user'];
+                $id_user = $_SESSION['id_user'];
 
-            $username = $_SESSION["username"];
-            $conn = new PDO("mysql:host=localhost;dbname=camagru_db","root","m2licee");
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $select = $conn->prepare("SELECT * FROM users WHERE username='$username'");
-            $select->setFetchMode(PDO::FETCH_ASSOC);
-            $select->execute();
-            $data = $select->fetch();
-            $_SESSION['id_user'] = $data['id_user'];
-            $id_user = $_SESSION['id_user'];
-
-            $stmt = $conn->prepare("INSERT INTO `comments`(`username`, `img_id`, `post`) VALUES (:username,:img_id,:post)");
-            $stmt->bindParam(':username', $username);
-            $stmt->bindParam(':img_id', $_POST["img_id"]);
-            $stmt->bindParam(':post', $post);
-            $username = $_SESSION["username"];
-            $img_id = $id_user;
-            $post = trim($_POST['textarea']);
-            $stmt->execute();
-            echo '<meta http-equiv="refresh" content="0.01;gallery.php"/>';
-            echo "<script> alert ('Comment Posted!') </script>";
-        }
-        if(isset($_POST['btnLike'])) {
-            $img_id = $_POST['img_id'];
-            $like = $conn->prepare("UPDATE `images` SET `likes`=likes+1 WHERE `img_id`=$img_id");
-            $like->execute();
-            echo '<meta http-equiv="refresh" content="0.01;gallery.php"/>';
-            echo "<script> alert ('Liked!') </script>";
+                $stmt = $conn->prepare("INSERT INTO `comments`(`username`, `img_id`, `post`) VALUES (:username,:img_id,:post)");
+                $stmt->bindParam(':username', $username);
+                $stmt->bindParam(':img_id', $_POST["img_id"]);
+                $stmt->bindParam(':post', $post);
+                $username = $_SESSION["username"];
+                $img_id = $id_user;
+                $post = trim($_POST['textarea']);
+                $stmt->execute();
+                echo '<meta http-equiv="refresh" content="0.01;gallery.php"/>';
+                echo "<script> alert ('Comment Posted!') </script>";
+            }
+        } if(isset($_POST['btnLike'])) {
+            if(isset($_SESSION["username"])){
+                $img_id = $_POST['img_id'];
+                $like = $conn->prepare("UPDATE `images` SET `likes`=likes+1 WHERE `img_id`=$img_id");
+                $like->execute();
+                echo '<meta http-equiv="refresh" content="0.01;gallery.php"/>';
+                echo "<script> alert ('Liked!') </script>";
+            }
         } 
+
+        
     ?>
 </body>
 </html>

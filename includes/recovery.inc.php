@@ -16,7 +16,7 @@ function recovery($email) {
     Please use the forwarded link to recover your password... 
 
     Please click this link to recover your account password:
-    http://localhost:8080/update.php?email='.$email.'&token='.$new_token.'
+    http://localhost:8080/Camagru/update.php?email='.$email.'&token='.$new_token.'
     ';
 
     $headers = 'From: no-reply@camagru.com' . "\r\n"; // Set from headers
@@ -35,4 +35,5 @@ if(isset($_POST['submit'])) {
         $query = "UPDATE users SET password=? WHERE email=?";
         $db->insertRow($query, $params);
     }
+    echo "<script> console.log('Email sent')</script>";
 }

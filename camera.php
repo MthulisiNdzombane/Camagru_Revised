@@ -35,6 +35,44 @@ if (isset($_POST['save'])) {
         echo '<meta http-equiv="refresh" content="0;gallery.php"/>';
 }
 
+//upload Images
+if(isset($_POST['upload'])) {
+    $select = $conn->prepare("SELECT * FROM users WHERE username='$username'");
+    $select->setFetchMode(PDO::FETCH_ASSOC);
+    $select->execute();
+    $data=$select->fetch();
+    $id_user=$data['id_user'];
+    $title="M2_".date("Y/m/d")."_".rand(1000, 1000000);
+
+    $username = $_SESSION['username'];
+    $images = $_FILES['profile']['name'];
+    $tmp_dir = $_FILES['profile']['tmp_name'];
+    $imageSize = $_FILES['profile']['size'];
+    $upload_dir='uploads/';
+    $extension=strtolower(pathinfo($images, PATHINFO_EXTENSION));
+    $valid_extensions=array("jpeg", "jpg", "png", "gif", "pdf");
+    $uphoto=rand(1000, 1000000).".".$extension;
+    $likes=0;
+
+    move_uploaded_file($tmp_dir, $upload_dir.$uphoto);
+    $file = file_get_contents($upload_dir.$uphoto, true);
+    $encoded = "data:image;base64,".base64_encode($file);
+
+    $upload=$conn->prepare("INSERT INTO images(username, photo, title, likes, id_user) VALUES(:username, :photo, :title, :likes, :id_user)");
+    $upload->bindParam(':username', $username);
+    $upload->bindParam(':photo', $encoded);
+    $upload->bindParam(':title', $title);
+    $upload->bindParam(':likes', $likes);
+    $upload->bindParam(':id_user', $id_user);
+    if($upload->execute()){
+        echo '<meta http-equiv="refresh" content="0.01;gallery.php"/>';
+        echo "<script> alert ('Photo Uploaded! AWE ;)') </script>";
+    } else if(!$upload->execute() === TRUE) {
+        echo "<script> alert ('Upload Failed. Please try again...') </script>";
+        echo '<meta http-equiv="refresh" content="0.01;camera.php"/>';
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -80,18 +118,31 @@ if (isset($_POST['save'])) {
                     <button  onclick="add_effect(9);"><img src="png/bugeye.png"/></button>
                     <button  onclick="add_effect(10);"><img src="png/fallout.png"/></button>
                     <button  onclick="add_effect(11);"><img src="png/savage.png"/></button>
-            </div>
-    </div>
+                </div>
+        </div>
     
-    <button id ="capture" onclick="snap();">Take Photo</button>
-    <canvas id="filters" width="400" height="300"></canvas>
-    <canvas id="canvas" width="400" height="300"></canvas>
+        <button id ="capture" onclick="snap();">Take Photo</button>
+        <canvas id="filters" width="400" height="300"></canvas>
+        <canvas id="canvas" width="400" height="300"></canvas>
 
-    <form action="camera.php" method="post">
-        <input id="camera" type="hidden" name="image">
-        <input type=submit name="save" value="save">
-    </form>
- </div>
+        <form action="camera.php" method="post">
+            <input id="camera" type="hidden" name="image">
+            <input type=submit name="save" value="save">
+        </form>
+    </div>
+    <hr>
+        <div>
+        <h5 style="color: blue;">Upload a picture of type: jpeg/jpg/png/gif/pdf</h5>
+            <form method="post" action="camera.php" enctype="multipart/form-data">
+                <input type="hidden" name="size" value="1000000">
+                <div>
+                    <input type="file" name="profile" required="" accept="*/image"><br>
+                </div>
+                <div>
+                    <button type="submit" name="upload">Upload</button>
+                </div>
+            </form>
+        </div>
  <script>
 
 function myFunction() {

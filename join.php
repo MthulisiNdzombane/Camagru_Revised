@@ -1,5 +1,4 @@
 <?php
-ini_set('display_errors', 1);
 session_start();
 ?>
 
@@ -24,8 +23,8 @@ session_start();
                 <form class="leftc" action="includes/join.inc.php" method="POST">
                     <input type="text" name="username" placeholder="username"><br>
                     <input type="email" name="email" placeholder="E-mail" ><br>
-                    <input type="password" name="pwd" placeholder="Password" minlength="8" maxlength="12" pattern="[A-Za-z]{.}" title="Password should be min 6 & max 12" required><br>
-                    <input type="password" name="pwd-repeat" placeholder="Confirm password" minlength="8" maxlength="12" pattern="[A-Za-z]{.}" title="Password should be min 6 & max 12" required><br>
+                    <input type="password" name="pwd" placeholder="Password" minlength="8" maxlength="12" pattern="[@A-Za-z0-9@]{.}" title="Password should be min 6 & max 12" required><br>
+                    <input type="password" name="pwd-repeat" placeholder="Confirm password" minlength="8" maxlength="12" pattern="@[A-Za-z0-9]@{.}" title="Password should be min 6 & max 12" required><br>
                     <button class="form_btn" type="submit" name="signup">Register</button>
                 </form>
             </div>
